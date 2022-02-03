@@ -1,4 +1,4 @@
-module github.com/4seils/utils
+module github.com/4seils/go_utils
 
 go 1.17
 
