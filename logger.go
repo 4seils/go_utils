@@ -11,8 +11,9 @@ import (
 func InitLogger(dirPath, logName string) *zap.SugaredLogger {
 	createLogDirectory(dirPath)
 	writeSyncer := getLogWriter(dirPath, logName)
+	syncer := zap.CombineWriteSyncers(os.Stdout, writeSyncer)
 	encoder := getEncoder()
-	core := zapcore.NewCore(encoder, writeSyncer, zapcore.DebugLevel)
+	core := zapcore.NewCore(encoder, syncer, zapcore.DebugLevel)
 	logger := zap.New(core, zap.AddCaller())
 	return logger.Sugar()
 }
