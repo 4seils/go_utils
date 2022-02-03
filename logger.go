@@ -33,7 +33,7 @@ func getEncoder() zapcore.Encoder {
 
 func getLogWriter(dirPath, logName string) zapcore.WriteSyncer {
 	lumberJackLogger := &lumberjack.Logger{
-		Filename:   dirPath + logName,
+		Filename:   dirPath + "/" + logName,
 		MaxSize:    5,
 		MaxBackups: 30,
 		MaxAge:     30,
