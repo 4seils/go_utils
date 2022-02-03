@@ -1,4 +1,4 @@
-package 4seils_utils
+package fseils_utils
 
 import (
 	"os"
