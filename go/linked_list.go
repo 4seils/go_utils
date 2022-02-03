@@ -1,4 +1,4 @@
-package "github.com/4seils/utils/go"
+package utils
 
 import (
 	"fmt"
