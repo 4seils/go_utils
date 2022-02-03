@@ -1,4 +1,4 @@
-package fseils_utils
+package github.com/4seils/utils/go
 
 import (
 	"fmt"
