@@ -1,9 +1,5 @@
 package go_utils
 
-import (
-	"fmt"
-)
-
 type MessageQueue struct {
 	Pending chan bool
 	list    *DoubleList
@@ -19,10 +15,10 @@ func (queue *MessageQueue) Push(key int, val interface{}) bool {
 	rslt := queue.list.AddTail(n)
 	if rslt {
 		queue.Pending <- true
-		fmt.Println("Push OK")
+		//fmt.Println("Push OK")
 	} else {
 		<-queue.Pending
-		fmt.Println("Push NG")
+		//fmt.Println("Push NG")
 	}
 	return rslt
 }
