@@ -26,3 +26,10 @@ func (queue *MessageQueue) Push(key int, val interface{}) bool {
 func (queue *MessageQueue) Pop() *DoubleNode {
 	return queue.list.RemoveHead()
 }
+
+func InitializeMq(capacity int) *MessageQueue {
+	q := new(MessageQueue)
+	q.list = NewDLL(capacity)
+	q.Pending = make(chan bool, capacity)
+	return q
+}
