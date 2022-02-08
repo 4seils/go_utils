@@ -8,15 +8,15 @@ type MqStruct struct {
 	l       *sync.RWMutex
 	m       map[string]*MessageQueue
 	Pending chan string // message stack map key
+	cap     int         // channel and MessageQueue size
 }
 
-const default_q_size = 3
-
-func CreateMessageStackMap(channelCap int) *MqStruct {
+func CreateMessageStackMap(cap int) *MqStruct {
 	mqs := &MqStruct{
 		l:       new(sync.RWMutex),
 		m:       make(map[string]*MessageQueue, 0),
-		Pending: make(chan string, channelCap),
+		Pending: make(chan string, cap),
+		cap:     cap,
 	}
 	return mqs
 }
@@ -31,7 +31,7 @@ func (mqs *MqStruct) SetMessageQueue(key string, val interface{}) {
 	mqs.l.Lock()
 	mq, ok := mqs.m[key]
 	if !ok {
-		mq = InitializeMq(default_q_size)
+		mq = InitializeMq(mqs.cap)
 		mqs.m[key] = mq
 	}
 	mq.Push(0, val)
@@ -39,9 +39,9 @@ func (mqs *MqStruct) SetMessageQueue(key string, val interface{}) {
 	mqs.Pending <- key
 }
 
-func (mqs *MqStruct) GetMessageQueue(key string) *MessageQueue {
+func (mqs *MqStruct) GetMessageQueue(key string) (*MessageQueue, bool) {
 	mqs.l.RLock()
-	mq := mqs.m[key]
+	mq, valid := mqs.m[key]
 	mqs.l.RUnlock()
-	return mq
+	return mq, valid
 }
