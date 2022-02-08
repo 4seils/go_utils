@@ -13,12 +13,12 @@ type MqStruct struct {
 const default_q_size = 3
 
 func CreateMessageStackMap(channelCap int) *MqStruct {
-	mq := &MqStruct{
+	mqs := &MqStruct{
 		l:       new(sync.RWMutex),
 		m:       make(map[string]*MessageQueue, 0),
 		Pending: make(chan string, channelCap),
 	}
-	return mq
+	return mqs
 }
 
 func (mqs *MqStruct) AddToMessageStackMap(key string, cap int) {
