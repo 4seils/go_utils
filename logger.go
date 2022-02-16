@@ -8,21 +8,18 @@ import (
 	"gopkg.in/natefinch/lumberjack.v2"
 )
 
-var atomicLevel zap.AtomicLevel
+var atomicLevel []zap.AtomicLevel
 
 func InitLogger(dirPath, logName string, maxSize, maxBackups, maxAge int, compress bool) *zap.SugaredLogger {
 	createLogDirectory(dirPath)
 	writeSyncer := getLogWriter(dirPath, logName, maxSize, maxBackups, maxAge, compress)
 	syncer := zap.CombineWriteSyncers(os.Stdout, writeSyncer)
 	encoder := getEncoder()
-	atomicLevel = zap.NewAtomicLevel()
-	core := zapcore.NewCore(encoder, syncer, atomicLevel)
+	atom := zap.NewAtomicLevel()
+	atomicLevel = append(atomicLevel, atom)
+	core := zapcore.NewCore(encoder, syncer, atom)
 	logger := zap.New(core, zap.AddCaller())
-	/*
-		mux := http.NewServeMux()
-		mux.Handle("/log_level", atom)
-		go http.ListenAndServe(":1065", mux)
-	*/
+
 	return logger.Sugar()
 }
 
@@ -45,7 +42,10 @@ func SetLoggerLevel(lvl string) {
 		// Requested log level not valid
 		return
 	}
-	atomicLevel.SetLevel(level)
+
+	for _, v := range atomicLevel {
+		v.SetLevel(level)
+	}
 }
 
 func createLogDirectory(dirPath string) {
